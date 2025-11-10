@@ -3,11 +3,14 @@ import re as regex
 import os
 import csv as csv
 from data.dataframe import DataFrame
+from data.eyetype import EyeType
 
 # directory that contains all the json files
 JSON_DATA_DIR_PATH = "json/"
 CSV_FILE_PATH = "csv/clinical_info_and_vf_baseline.csv"
-
+CSV_IMAGE_COL = 16
+CSV_GLAUCOMA_COL =  10
+CSV_LATERALITY_COL = 1
 
 @staticmethod
 def get_all_image_data():
@@ -32,21 +35,27 @@ def get_all_image_data():
 
 
 @staticmethod
-def make_data() -> list[DataFrame]:
+def make_data():
     """This helper function should return a training
     and test set that can be used for our resnet classification model"""
-    with open(CSV_FILE_PATH, "r") as csv_file:
+    data: list[DataFrame] = []
+    with open(CSV_FILE_PATH, "r", encoding='latin-1') as csv_file:
         # construct csv reader object
         csv_reader = csv.reader(csv_file)
         # throw out the header
         _ = csv_reader.__next__()
+        # yeah it spans 2 lines get over it
+        _ = csv_reader.__next__()
         for row in csv_reader:
             # find json file with image data
-            json_file_path = JSON_DATA_DIR_PATH + row[5] + ".json"
+            json_file_path = JSON_DATA_DIR_PATH + row[16].replace(".jpg", ".json")
+            etype = EyeType(row[1])
+            label = row[10] 
             with open(json_file_path, "r") as file:
-                data = json.load(file)
-                print(data)
-
+                image_data = json.load(file)["imageData"]
+                df = DataFrame(image_data, etype, label)
+                data.append(df)
+        return data
 
 if __name__ == "__main__":
     make_data()
