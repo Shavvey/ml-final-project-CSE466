@@ -1,0 +1,12 @@
+# ignore open excel files
+**/~$*.xlsx
+# config and pycache stuff
+**/.DS_Store
+**/.vscode
+**/__pycache__
+# latex stuff
+**/*.aux
+**/*.log
+**/*.pdf
+json
+csv
