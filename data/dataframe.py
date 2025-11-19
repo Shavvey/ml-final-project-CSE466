@@ -1,8 +1,9 @@
 from data.eyetype import EyeType
+from dataclasses import dataclass
 
-
+@dataclass
 class DataFrame:
-    """This class is meant to encapsulate all the features the resenet model will train with"""
+    """This class is meant to encapsulate all the features the resnet model will train with"""
 
     type: EyeType  # either left (OS) or right (OD) eye
     image_data: bytearray  # images as bytes (normalize this later)
